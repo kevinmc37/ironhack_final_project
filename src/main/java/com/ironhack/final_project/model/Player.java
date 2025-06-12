@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,10 +20,10 @@ import lombok.Setter;
 public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long player_id;
+    private Long playerId;
 
     @NotBlank
-    private String player_name;
+    private String name;
 
     @Positive
     private int health;
@@ -39,4 +42,10 @@ public class Player {
 
     @PositiveOrZero
     private long gold;
+
+    @PositiveOrZero
+    private double weight;
+
+    @ManyToMany
+    private List<Effect> status = new ArrayList<>();
 }

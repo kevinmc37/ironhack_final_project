@@ -3,6 +3,7 @@ package com.ironhack.final_project.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,19 +19,31 @@ import java.util.List;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long item_id;
+    private Long itemId;
 
     @NotBlank
-    private String description;
-
-    @Positive
-    private int price;
+    private String name;
 
     @Positive
     private int quantity;
 
+    @Positive
+    private int price;
+
+    @PositiveOrZero
+    private double weight;
+
+    @NotBlank
+    private String description;
+
     @ManyToMany
     private List<Effect> effect;
+
+    public void setAdditionalDescription() {
+        String description = "\nCantidad: " + this.getQuantity() +
+                "\nPrecio: " + this.getPrice() + "\nPeso: " + this.getWeight();
+        this.setDescription(this.getDescription() + description);
+    }
 
     public void useItem(Player player) {
 

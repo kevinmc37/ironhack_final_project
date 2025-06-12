@@ -17,7 +17,7 @@ import java.util.List;
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long inventory_id;
+    private Long inventoryId;
 
     @Positive
     private int space;
@@ -25,7 +25,18 @@ public class Inventory {
     @OneToMany
     private List<Item> items;
 
+    @OneToOne
+    private Player player;
+
     public void order() {
 
+    }
+
+    public double getWeight() {
+        double weight = 0;
+        for (Item item : items) {
+            weight += item.getWeight();
+        }
+        return weight;
     }
 }
