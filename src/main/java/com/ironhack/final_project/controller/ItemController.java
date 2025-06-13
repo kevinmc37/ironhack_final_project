@@ -1,5 +1,7 @@
 package com.ironhack.final_project.controller;
 
+import com.ironhack.final_project.dto.ItemRequestDTO;
+import com.ironhack.final_project.model.Item;
 import com.ironhack.final_project.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,74 +20,41 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Coffee>> getAll() {
-        return ResponseEntity.ok(coffeeService.getAll());
+    public ResponseEntity<List<Item>> getAll() {
+        return ResponseEntity.ok(itemService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Coffee> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(coffeeService.getById(id));
-    }
-
-    @GetMapping("/by-strength")
-    public ResponseEntity<List<Coffee>> getByStrength(@RequestParam int strength) {
-        return ResponseEntity.ok(coffeeService.getByStrength(strength));
-    }
-
-    // GET /coffees/stronger-than?minStrength=5
-    @GetMapping("/stronger-than")
-    public ResponseEntity<List<Coffee>> getByStrengthGreaterThan(@RequestParam int minStrength) {
-        return ResponseEntity.ok(coffeeService.getByStrengthGreaterThan(minStrength));
-    }
-
-    // GET /coffees/search?origin=Brazil&name=Santos
-    @GetMapping("/search")
-    public ResponseEntity<List<Coffee>> getByOriginAndName(
-            @RequestParam String origin,
-            @RequestParam String name) {
-        return ResponseEntity.ok(coffeeService.getByOriginAndName(origin, name));
+    public ResponseEntity<Item> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(itemService.getById(id));
     }
 
     // GET /coffees/by-name?name=Arabica
-    @GetMapping("/by-name")
-    public ResponseEntity<List<Coffee>> getByName(@RequestParam String name) {
-        return ResponseEntity.ok(coffeeService.getByName(name));
-    }
-
-    // GET /coffees/by-origin?origin=Ethiopia
-    @GetMapping("/by-origin")
-    public ResponseEntity<List<Coffee>> getStrongestByOrigin(@RequestParam String origin) {
-        return ResponseEntity.ok(coffeeService.getStrongestByOrigin(origin));
-    }
-
-    // GET /coffees/long-names?minLength=10
-    @GetMapping("/long-names")
-    public ResponseEntity<List<Coffee>> getByNameLengthGreaterThan(@RequestParam int minLength) {
-        return ResponseEntity.ok(coffeeService.getByNameLengthGreaterThan(minLength));
+    @GetMapping("/name")
+    public ResponseEntity<List<Item>> getByName(@RequestParam String name) {
+        return ResponseEntity.ok(itemService.getByName(name));
     }
 
     @PostMapping
-    public ResponseEntity<Coffee> create(@Valid @RequestBody CoffeeRequestDTO dto) {
-        Coffee coffee = coffeeService.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(coffee);
+    public ResponseEntity<Item> create(@Valid @RequestBody ItemRequestDTO dto) {
+        Item item = itemService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Coffee> update(@PathVariable Long id, @Valid @RequestBody CoffeeRequestDTO dto) {
-        Coffee coffee = coffeeService.update(id, dto);
-        return ResponseEntity.ok(coffee);
-
-        // return ResponseEntity.ok(service.update(id, dto));
+    public ResponseEntity<Item> update(@PathVariable Long id, @Valid @RequestBody ItemRequestDTO dto) {
+        Item item = itemService.update(id, dto);
+        return ResponseEntity.ok(item);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Coffee> updateName(@PathVariable Long id, @Valid @RequestBody CoffeeNameRequest dto) {
-        return ResponseEntity.ok(coffeeService.updateName(id, dto));
+    public ResponseEntity<Item> updateName(@PathVariable Long id, @Valid @RequestBody ItemRequestDTO dto) {
+        return ResponseEntity.ok(itemService.updateName(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        coffeeService.delete(id);
+        itemService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

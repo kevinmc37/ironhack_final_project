@@ -1,5 +1,9 @@
 package com.ironhack.final_project.service;
 
+import com.ironhack.final_project.dto.ItemRequestDTO;
+import com.ironhack.final_project.exception.BadRequestException;
+import com.ironhack.final_project.exception.ItemNotFoundException;
+import com.ironhack.final_project.model.Item;
 import com.ironhack.final_project.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,88 +18,82 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public Coffee create (CoffeeRequestDTO coffeeRequestDTO) {
-        validateName(coffeeRequestDTO.getName());
-        Coffee newCoffee = new Coffee();
-        newCoffee.setName(coffeeRequestDTO.getName());
-        newCoffee.setOrigin(coffeeRequestDTO.getOrigin());
-        if (coffeeRequestDTO.getStrength() != null) {
-            newCoffee.setStrength(coffeeRequestDTO.getStrength());
+    public Item create (ItemRequestDTO itemRequestDTO) {
+        validateName(itemRequestDTO.getName());
+        Item newItem = new Item();
+        newItem.setName(itemRequestDTO.getName());
+        if (itemRequestDTO.getQuantity() != 0) {
+            newItem.setQuantity(itemRequestDTO.getQuantity());
         }
-        return coffeeRepository.save(newCoffee);
+        if (itemRequestDTO.getDescription() != null) {
+            newItem.setDescription(itemRequestDTO.getDescription());
+        }
+        if (itemRequestDTO.getWeight() != 0) {
+            newItem.setWeight(itemRequestDTO.getWeight());
+        }
+        if (itemRequestDTO.getPrice() != 0) {
+            newItem.setPrice(itemRequestDTO.getPrice());
+        }
+        if (itemRequestDTO.getEffect() != null) {
+            newItem.setEffect(itemRequestDTO.getEffect());
+        }
+        return itemRepository.save(newItem);
     }
 
-    public Coffee update(Long id, CoffeeRequestDTO coffeeRequestDTO) {
-        Optional<Coffee> optionalCoffee = getCoffee(id);
-        Coffee coffeeFromDb = optionalCoffee.get();
-        validateUpdatedName(coffeeFromDb, coffeeRequestDTO.getName());
-        coffeeFromDb.setName(coffeeRequestDTO.getName());
-        coffeeFromDb.setOrigin(coffeeRequestDTO.getOrigin());
-        coffeeFromDb.setStrength(coffeeRequestDTO.getStrength());
-        return coffeeRepository.save(coffeeFromDb);
+    public Item update(Long id, ItemRequestDTO itemRequestDTO) {
+        Optional<Item> optionalItem = getItem(id);
+        Item itemFromDb = optionalItem.get();
+        validateUpdatedName(itemFromDb, itemRequestDTO.getName());
+        itemFromDb.setName(itemRequestDTO.getName());
+        itemFromDb.setQuantity(itemRequestDTO.getQuantity());
+        itemFromDb.setDescription(itemRequestDTO.getDescription());
+        itemFromDb.setWeight(itemRequestDTO.getWeight());
+        itemFromDb.setPrice(itemRequestDTO.getPrice());
+        itemFromDb.setEffect(itemRequestDTO.getEffect());
+        return itemRepository.save(itemFromDb);
     }
 
-    public Coffee updateName(Long id, CoffeeNameRequest dto) {
-        Optional<Coffee> optionalCoffee = getCoffee(id);
-        Coffee coffeeFromDb = optionalCoffee.get();
-        validateUpdatedName(coffeeFromDb, dto.getName());
-        coffeeFromDb.setName(dto.getName());
-        return coffeeRepository.save(coffeeFromDb);
+    public Item updateName(Long id, ItemRequestDTO itemRequestDTO) {
+        Optional<Item> optionalItem = getItem(id);
+        Item itemFromDb = optionalItem.get();
+        validateUpdatedName(itemFromDb, itemRequestDTO.getName());
+        itemFromDb.setName(itemRequestDTO.getName());
+        return itemRepository.save(itemFromDb);
     }
 
     public void delete(Long id) {
-        boolean existsById = coffeeRepository.existsById(id);
-        if (!existsById) { throw new CoffeeNotFoundException(id.toString()); }
-        else { coffeeRepository.deleteById(id); }
+        boolean existsById = itemRepository.existsById(id);
+        if (!existsById) { throw new ItemNotFoundException(id.toString()); }
+        else { itemRepository.deleteById(id); }
     }
 
-    public List<Coffee> getAll() { return coffeeRepository.findAll(); }
+    public List<Item> getAll() { return itemRepository.findAll(); }
 
-    public Coffee getById(Long id) {
-        Optional<Coffee> optionalCoffee = getCoffee(id);
-        return optionalCoffee.get();
+    public Item getById(Long id) {
+        Optional<Item> optionalItem = getItem(id);
+        return optionalItem.get();
     }
 
-    public List<Coffee> getByStrength(int strength) {
-        return coffeeRepository.findByStrength(strength);
+    public List<Item> getByName(String name) {
+        return itemRepository.findByName(name);
     }
 
-    public List<Coffee> getByStrengthGreaterThan(int minStrength) {
-        return coffeeRepository.findByStrengthGreaterThan(minStrength);
-    }
-
-    public List<Coffee> getByOriginAndName(String origin, String name) {
-        return coffeeRepository.findByOriginAndName(origin, name);
-    }
-
-    public List<Coffee> getByName(String name) {
-        return coffeeRepository.findByName(name);
-    }
-
-    public List<Coffee> getStrongestByOrigin(String origin) {
-        return coffeeRepository.findStrongestByOrigin(origin);
-    }
-
-    public List<Coffee> getByNameLengthGreaterThan(int minLength) {
-        return coffeeRepository.findByNameLengthGreaterThan(minLength);
-    }
-
-    private Optional<Coffee> getCoffee(Long id) {
-        Optional<Coffee> optionalCoffee = coffeeRepository.findById(id);
-        if (optionalCoffee.isEmpty()) {
-            throw new CoffeeNotFoundException(id.toString());
+    private Optional<Item> getItem(Long id) {
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        if (optionalItem.isEmpty()) {
+            throw new ItemNotFoundException(id.toString());
         }
-        return optionalCoffee;
+        return optionalItem;
     }
 
     private void validateName(String name) {
-        boolean exists = coffeeRepository.existsByName(name);
+        boolean exists = itemRepository.existsByName(name);
         if (exists) {
-            throw new BadRequestException("Coffee with name " + name + " already exists.");
+            throw new BadRequestException("Item with name " + name + " already exists.");
         }
     }
 
-    private void validateUpdatedName(Coffee coffeeFromDb, String dto) {
-        if (!coffeeFromDb.getName().equalsIgnoreCase(dto)) { validateName(dto); }
+    private void validateUpdatedName(Item itemFromDb, String dto) {
+        if (!itemFromDb.getName().equalsIgnoreCase(dto)) { validateName(dto); }
     }
 }

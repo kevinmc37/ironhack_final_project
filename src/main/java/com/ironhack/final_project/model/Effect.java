@@ -22,12 +22,13 @@ public class Effect {
     private Long effectId;
 
     @NotBlank
+    private String name;
+
+    @NotBlank
     private String description;
 
     @PositiveOrZero
     private int turns;
-
-
 
     public String slowTarget(Player player, int speed_debuff, int turns) {
         if (turns == 0) {

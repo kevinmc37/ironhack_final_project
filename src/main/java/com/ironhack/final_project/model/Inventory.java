@@ -28,15 +28,15 @@ public class Inventory {
     @OneToOne
     private Player player;
 
-    public void order() {
-
-    }
-
     public double getWeight() {
         double weight = 0;
         for (Item item : items) {
             weight += item.getWeight();
         }
         return weight;
+    }
+
+    public void order() {
+        //TODO
     }
 }
